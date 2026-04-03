@@ -5,7 +5,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trophy, Play, RotateCcw, Pause, Volume2, VolumeX } from 'lucide-react';
+import { Trophy, Play, RotateCcw, Pause, Volume2, VolumeX, Maximize } from 'lucide-react';
 
 const PADDLE_HEIGHT = 80;
 const PADDLE_WIDTH = 10;
@@ -82,6 +82,19 @@ export default function App() {
   const [goalSizeRatio, setGoalSizeRatio] = useState(0.33); // 1/3 of height
   const [winningScore, setWinningScore] = useState(5);
   const [customScoreInput, setCustomScoreInput] = useState('10');
+  const [canvasSize, setCanvasSize] = useState<'small' | 'medium' | 'large'>('medium');
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const toggleFullScreen = () => {
+    if (!containerRef.current) return;
+    if (!document.fullscreenElement) {
+      containerRef.current.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
 
   // Game state refs for the animation loop to avoid closure issues
   const ballPos = useRef({ x: 400, y: 300 });
@@ -431,6 +444,7 @@ export default function App() {
     }
 
     const relativeY = clientY - rect.top;
+    // Use the actual bounding rect height for scaling to support responsive sizes
     const scaleY = 600 / rect.height;
     const newY = relativeY * scaleY - PADDLE_HEIGHT / 2;
     
@@ -447,27 +461,37 @@ export default function App() {
     triggerSound('start');
   };
 
+  const getSizeClass = () => {
+    switch (canvasSize) {
+      case 'small': return 'max-w-xl';
+      case 'large': return 'max-w-5xl';
+      default: return 'max-w-3xl';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-4 font-mono text-white">
-      <div className="relative group">
-        {/* Retro TV Frame */}
-        <div className="absolute -inset-4 bg-neutral-800 rounded-3xl border-8 border-neutral-700 shadow-2xl pointer-events-none"></div>
-        
-        {/* Score Board */}
-        <div className="absolute top-8 left-0 right-0 flex justify-around text-6xl font-bold z-10 opacity-50 select-none pointer-events-none">
-          <span>{playerScore}</span>
-          <span>{aiScore}</span>
-        </div>
+      <div ref={containerRef} className={`relative group w-full flex flex-col items-center justify-center ${document.fullscreenElement ? 'bg-black h-screen' : ''}`}>
+        <div className={`relative w-full ${getSizeClass()} transition-all duration-300`}>
+          {/* Retro TV Frame */}
+          <div className="absolute -inset-4 bg-neutral-800 rounded-3xl border-8 border-neutral-700 shadow-2xl pointer-events-none"></div>
+          
+          {/* Score Board */}
+          <div className="absolute top-8 left-0 right-0 flex justify-around text-6xl font-bold z-10 opacity-50 select-none pointer-events-none">
+            <span>{playerScore}</span>
+            <span>{aiScore}</span>
+          </div>
 
-        {/* Game Canvas */}
-        <canvas
-          ref={canvasRef}
-          width={800}
-          height={600}
-          onMouseMove={handleMouseMove}
-          onTouchMove={handleMouseMove}
-          className="bg-black rounded-lg cursor-none w-full max-w-3xl aspect-[4/3] shadow-[0_0_50px_rgba(255,255,255,0.1)] relative z-0"
-        />
+          {/* Game Canvas */}
+          <canvas
+            ref={canvasRef}
+            width={800}
+            height={600}
+            onMouseMove={handleMouseMove}
+            onTouchMove={handleMouseMove}
+            className="bg-black rounded-lg cursor-none w-full aspect-[4/3] shadow-[0_0_50px_rgba(255,255,255,0.1)] relative z-0"
+          />
+        </div>
 
         {/* UI Overlays */}
         <AnimatePresence>
@@ -581,6 +605,34 @@ export default function App() {
                 </div>
               </div>
 
+              <div className="flex flex-col items-center gap-3 mb-8">
+                <p className="text-[10px] text-neutral-500 uppercase tracking-[0.2em]">Screen & Size</p>
+                <div className="flex gap-4">
+                  <button
+                    onClick={toggleFullScreen}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 bg-white/10 text-xs uppercase tracking-widest hover:bg-white/20 transition-all"
+                  >
+                    <Maximize size={16} />
+                    FULLSCREEN
+                  </button>
+                  <div className="flex gap-1 bg-white/5 p-1 rounded-lg border border-white/10">
+                    {(['small', 'medium', 'large'] as const).map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => setCanvasSize(s)}
+                        className={`px-3 py-1 rounded text-[10px] uppercase transition-all ${
+                          canvasSize === s 
+                            ? 'bg-white text-black' 
+                            : 'text-white/50 hover:text-white'
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <button
                 onClick={startGame}
                 className="flex items-center gap-2 bg-white text-black px-8 py-4 rounded-full font-bold hover:bg-neutral-200 transition-colors group"
@@ -624,6 +676,13 @@ export default function App() {
           >
             {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
           </button>
+          <button
+            onClick={toggleFullScreen}
+            className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+            title="Toggle Fullscreen"
+          >
+            <Maximize size={20} />
+          </button>
           {gameState === 'playing' && (
             <button
               onClick={() => setShowEffects(!showEffects)}
@@ -660,6 +719,13 @@ export default function App() {
             <div className="flex flex-col items-center gap-6 mb-8">
               <div className="flex flex-wrap justify-center gap-4">
                 <button
+                  onClick={toggleFullScreen}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 bg-white/10 text-[10px] uppercase tracking-widest transition-all"
+                >
+                  <Maximize size={14} />
+                  FULLSCREEN
+                </button>
+                <button
                   onClick={() => setIsMuted(!isMuted)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-[10px] uppercase tracking-widest transition-all ${
                     !isMuted ? 'bg-white/10 border-white/20' : 'bg-red-500/20 border-red-500/50 text-red-400'
@@ -684,6 +750,25 @@ export default function App() {
                 >
                   GOAL MODE: {isGoalMode ? 'ON' : 'OFF'}
                 </button>
+              </div>
+
+              <div className="flex flex-col items-center gap-2 mb-4">
+                <p className="text-[10px] text-neutral-500 uppercase tracking-[0.2em]">Game Size</p>
+                <div className="flex gap-1 bg-white/5 p-1 rounded-lg border border-white/10">
+                  {(['small', 'medium', 'large'] as const).map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setCanvasSize(s)}
+                      className={`px-3 py-1 rounded text-[10px] uppercase transition-all ${
+                        canvasSize === s 
+                          ? 'bg-white text-black' 
+                          : 'text-white/50 hover:text-white'
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {isGoalMode && (
