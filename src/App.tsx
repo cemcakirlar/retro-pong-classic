@@ -477,6 +477,14 @@ export default function App() {
     triggerSound("start");
   };
 
+  const goHome = () => {
+    setPlayerScore(0);
+    setAiScore(0);
+    setWinner(null);
+    resetBall(1);
+    setGameState("start");
+  };
+
   const getSizeClass = () => {
     switch (canvasSize) {
       case "small":
@@ -501,8 +509,8 @@ export default function App() {
       ref={touchArenaRef}
       className={
         isTouchMobile
-          ? "fixed inset-0 z-50 flex h-dvh max-h-dvh min-h-dvh w-full flex-col overflow-hidden bg-neutral-950 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] font-mono text-white"
-          : "flex min-h-screen flex-col items-center justify-center bg-neutral-950 p-4 font-mono text-white"
+          ? "fixed inset-0 z-50 flex h-dvh max-h-dvh min-h-dvh w-full flex-col overflow-hidden bg-neutral-950 pt-[env(safe-area-inset-top)] pb-[max(2rem,env(safe-area-inset-bottom))] font-mono text-white"
+          : "flex h-screen w-full flex-col items-center overflow-hidden bg-neutral-950 p-4 font-mono text-white"
       }
     >
       <GameStatusAnnouncer gameState={gameState} playerScore={playerScore} aiScore={aiScore} winner={winner} />
@@ -511,13 +519,13 @@ export default function App() {
         className={
           isTouchMobile
             ? `group relative flex min-h-0 w-full flex-1 flex-col items-center justify-center overflow-hidden ${isFullscreen ? "bg-black" : "bg-neutral-950"}`
-            : `group relative flex w-full flex-col items-center justify-center ${isFullscreen ? "h-screen bg-black" : ""}`
+            : `group relative flex min-h-0 w-full flex-1 flex-col items-center justify-center ${isFullscreen ? "h-full bg-black" : ""}`
         }
       >
         <div
           className={
             isTouchMobile
-              ? "relative flex min-h-0 w-full flex-1 flex-col items-center justify-center px-2"
+              ? "relative flex min-h-0 w-full flex-1 flex-col items-center justify-center px-2 pb-2"
               : `relative w-full ${getSizeClass()} transition-all duration-300`
           }
         >
@@ -600,6 +608,8 @@ export default function App() {
               canvasSize={canvasSize}
               onCanvasSizeChange={setCanvasSize}
               onToggleFullscreen={toggleFullScreen}
+              onRestart={startGame}
+              onHome={goHome}
               onResume={() => setGameState("playing")}
               reduceMotion={prefersReducedMotion}
             />
@@ -607,7 +617,7 @@ export default function App() {
         </AnimatePresence>
       </div>
 
-      <GameFooter winningScore={winningScore} isTouchMobile={isTouchMobile} isPlaying={gameState === "playing"} />
+      <GameFooter winningScore={winningScore} isTouchMobile={isTouchMobile} />
     </div>
   );
 }

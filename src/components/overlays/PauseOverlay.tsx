@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import { Maximize, Play, Volume2, VolumeX } from "lucide-react";
-import { SiteLink } from "../shared/SiteLink";
+import { Home, Maximize, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 
 type CanvasSize = "small" | "medium" | "large";
 
@@ -19,14 +18,16 @@ type PauseOverlayProps = {
   canvasSize: CanvasSize;
   onCanvasSizeChange: (size: CanvasSize) => void;
   onToggleFullscreen: () => void;
+  onRestart: () => void;
+  onHome: () => void;
   onResume: () => void;
   reduceMotion: boolean;
 };
 
-const menuOverlayShell = "absolute inset-0 z-20 flex min-h-0 flex-col overflow-hidden rounded-lg";
+const menuOverlayShell = "fixed inset-0 z-40 flex overflow-hidden";
 const menuOverlayScroll =
-  "min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y py-4 [-webkit-overflow-scrolling:touch] [padding-left:max(1rem,env(safe-area-inset-left))] [padding-right:max(1rem,env(safe-area-inset-right))] [padding-bottom:max(1rem,env(safe-area-inset-bottom))] [padding-top:max(0.5rem,env(safe-area-inset-top))]";
-const menuOverlayInner = "mx-auto flex w-full max-w-2xl flex-col items-center";
+  "h-full w-full overflow-y-auto overscroll-y-contain touch-pan-y [-webkit-overflow-scrolling:touch] [padding-left:max(1rem,env(safe-area-inset-left))] [padding-right:max(1rem,env(safe-area-inset-right))] [padding-bottom:max(1rem,env(safe-area-inset-bottom))] [padding-top:max(0.5rem,env(safe-area-inset-top))]";
+const menuOverlayInner = "mx-auto flex min-h-full w-full max-w-2xl flex-col items-center justify-center py-4 sm:py-6";
 
 export function PauseOverlay({
   isMuted,
@@ -42,6 +43,8 @@ export function PauseOverlay({
   canvasSize,
   onCanvasSizeChange,
   onToggleFullscreen,
+  onRestart,
+  onHome,
   onResume,
   reduceMotion,
 }: PauseOverlayProps) {
@@ -55,16 +58,16 @@ export function PauseOverlay({
     role: "dialog" as const,
     "aria-modal": true,
     "aria-labelledby": "pause-title",
-    className: `${menuOverlayShell} bg-black/80`,
+    className: `${menuOverlayShell} bg-emerald-950/65 backdrop-blur-[2px]`,
   };
 
   const content = (
     <>
-      <h2 id="pause-title" className="mb-6 text-4xl font-bold italic sm:mb-8">
+      <h2 id="pause-title" className="mb-4 text-4xl font-bold italic sm:mb-8">
         PAUSED
       </h2>
 
-      <div className="mb-8 flex flex-col items-center gap-6">
+      <div className="mb-5 flex flex-col items-center gap-4 sm:mb-8 sm:gap-6">
         <div className="flex flex-wrap justify-center gap-4">
           <button
             onClick={onToggleFullscreen}
@@ -158,18 +161,30 @@ export function PauseOverlay({
         </div>
       </div>
 
-      <p className="mb-6">
-        <SiteLink className="text-xs uppercase tracking-widest" />
-      </p>
-
-      <button
-        ref={resumeButtonRef}
-        onClick={onResume}
-        className="flex min-h-11 items-center gap-2 rounded-full bg-white px-8 py-4 font-bold text-black transition-colors hover:bg-neutral-200"
-      >
-        <Play className="fill-current" />
-        RESUME
-      </button>
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <button
+          onClick={onHome}
+          className="flex min-h-11 items-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-3 font-bold text-white transition-colors hover:bg-white/20"
+        >
+          <Home size={18} />
+          HOME
+        </button>
+        <button
+          onClick={onRestart}
+          className="flex min-h-11 items-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-3 font-bold text-white transition-colors hover:bg-white/20"
+        >
+          <RotateCcw size={18} />
+          START OVER
+        </button>
+        <button
+          ref={resumeButtonRef}
+          onClick={onResume}
+          className="flex min-h-11 items-center gap-2 rounded-full bg-white px-8 py-4 font-bold text-black transition-colors hover:bg-neutral-200"
+        >
+          <Play className="fill-current" />
+          RESUME
+        </button>
+      </div>
     </>
   );
 

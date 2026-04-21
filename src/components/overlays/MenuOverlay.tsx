@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { Maximize, Play, Volume2, VolumeX } from "lucide-react";
 import { type Difficulty, MAX_WINNING_SCORE, MIN_WINNING_SCORE } from "../../constants";
-import { SiteLink } from "../shared/SiteLink";
 
 type CanvasSize = "small" | "medium" | "large";
 
@@ -28,10 +27,10 @@ type MenuOverlayProps = {
   reduceMotion: boolean;
 };
 
-const menuOverlayShell = "absolute inset-0 z-20 flex min-h-0 flex-col overflow-hidden rounded-lg";
+const menuOverlayShell = "fixed inset-0 z-40 flex overflow-hidden";
 const menuOverlayScroll =
-  "min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y py-4 [-webkit-overflow-scrolling:touch] [padding-left:max(1rem,env(safe-area-inset-left))] [padding-right:max(1rem,env(safe-area-inset-right))] [padding-bottom:max(1rem,env(safe-area-inset-bottom))] [padding-top:max(0.5rem,env(safe-area-inset-top))]";
-const menuOverlayInner = "mx-auto flex w-full max-w-2xl flex-col items-center";
+  "h-full w-full overflow-y-auto overscroll-y-contain touch-pan-y [-webkit-overflow-scrolling:touch] [padding-left:max(1rem,env(safe-area-inset-left))] [padding-right:max(1rem,env(safe-area-inset-right))] [padding-bottom:max(1rem,env(safe-area-inset-bottom))] [padding-top:max(0.5rem,env(safe-area-inset-top))]";
+const menuOverlayInner = "mx-auto flex min-h-full w-full max-w-2xl flex-col items-center justify-center py-4 sm:py-6";
 
 export function MenuOverlay({
   difficulty,
@@ -64,7 +63,7 @@ export function MenuOverlay({
     role: "dialog" as const,
     "aria-modal": true,
     "aria-labelledby": "menu-title",
-    className: `${menuOverlayShell} bg-black/80`,
+    className: `${menuOverlayShell} bg-emerald-950/65 backdrop-blur-[2px]`,
   };
 
   const content = (
@@ -206,9 +205,6 @@ export function MenuOverlay({
         START GAME
       </button>
       <p className="mt-8 text-sm uppercase tracking-widest text-neutral-500">USE MOUSE OR TOUCH TO MOVE</p>
-      <p className="mt-4">
-        <SiteLink className="text-xs uppercase tracking-widest" />
-      </p>
     </>
   );
 

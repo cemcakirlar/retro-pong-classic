@@ -24,15 +24,17 @@ export function ControlBar({
   isTouchMobile,
   reduceMotion,
 }: ControlBarProps) {
-  const overlaySafeX = isTouchMobile ? "left-4 right-4" : "left-4";
-  const pauseSafeRight = isTouchMobile ? "right-4" : "right-4";
+  const controlsPositionClass = isTouchMobile ? "absolute top-4 left-4 right-4" : "fixed top-4 left-4";
+  const pausePositionClass = isTouchMobile ? "absolute top-4 right-4" : "fixed top-4 right-4";
+  const baseControlButtonClass =
+    "inline-flex min-h-11 min-w-11 items-center justify-center rounded-full p-2 transition-colors";
 
   return (
     <>
-      <div data-paddle-touch-ignore className={`absolute top-4 ${overlaySafeX} z-10 flex gap-2`}>
+      <div data-paddle-touch-ignore className={`${controlsPositionClass} z-10 flex gap-2`}>
         <button
           onClick={onToggleMuted}
-          className="min-h-11 min-w-11 rounded-full bg-white/10 p-2 transition-colors hover:bg-white/20"
+          className={`${baseControlButtonClass} bg-white/10 hover:bg-white/20`}
           title="Toggle Sound"
           aria-label="Toggle sound"
         >
@@ -40,7 +42,7 @@ export function ControlBar({
         </button>
         <button
           onClick={onToggleFullscreen}
-          className="min-h-11 min-w-11 rounded-full bg-white/10 p-2 transition-colors hover:bg-white/20"
+          className={`${baseControlButtonClass} bg-white/10 hover:bg-white/20`}
           title="Toggle Fullscreen"
           aria-label="Toggle fullscreen"
         >
@@ -49,7 +51,7 @@ export function ControlBar({
         {isPlaying && (
           <button
             onClick={onToggleEffects}
-            className={`rounded-full p-2 transition-colors ${
+            className={`${baseControlButtonClass} ${
               showEffects ? "bg-purple-500/20 text-purple-400" : "bg-white/10 hover:bg-white/20"
             }`}
             title="Toggle Effects"
@@ -67,7 +69,7 @@ export function ControlBar({
           type="button"
           data-paddle-touch-ignore
           onClick={onPause}
-          className={`absolute top-4 ${pauseSafeRight} z-10 min-h-11 min-w-11 rounded-full bg-white/10 p-2 transition-colors hover:bg-white/20`}
+          className={`${pausePositionClass} z-10 ${baseControlButtonClass} bg-white/10 hover:bg-white/20`}
           aria-label="Pause game"
         >
           <Pause size={20} />
