@@ -444,7 +444,7 @@ export default function App() {
   useEffect(() => {
     requestRef.current = requestAnimationFrame(animate);
     return () => {
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+      if (requestRef.current !== null) cancelAnimationFrame(requestRef.current);
     };
   }, [gameState, difficulty, isMuted, showEffects, winningScore, isGoalMode, goalSizeRatio]);
 

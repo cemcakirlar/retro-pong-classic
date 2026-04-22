@@ -75,6 +75,7 @@ export function MenuOverlay({
       <div className="mb-8 flex gap-2">
         {(["easy", "medium", "hard"] as Difficulty[]).map((nextDifficulty) => (
           <button
+            type="button"
             key={nextDifficulty}
             onClick={() => onDifficultyChange(nextDifficulty)}
             className={`rounded border px-4 py-1 text-xs uppercase tracking-widest transition-all ${
@@ -82,6 +83,7 @@ export function MenuOverlay({
                 ? "border-white bg-white text-black"
                 : "border-white/20 bg-transparent text-white hover:border-white/50"
             }`}
+            aria-pressed={difficulty === nextDifficulty}
           >
             {nextDifficulty}
           </button>
@@ -90,27 +92,33 @@ export function MenuOverlay({
 
       <div className="mb-8 flex gap-4">
         <button
+          type="button"
           onClick={onToggleMuted}
           className={`min-h-11 flex items-center gap-2 rounded-lg border px-4 py-2 text-xs uppercase tracking-widest transition-all ${
             !isMuted ? "border-white/20 bg-white/10" : "border-red-500/50 bg-red-500/20 text-red-400"
           }`}
+          aria-pressed={!isMuted}
         >
-          {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+          {isMuted ? <VolumeX size={16} aria-hidden="true" /> : <Volume2 size={16} aria-hidden="true" />}
           SOUND: {isMuted ? "OFF" : "ON"}
         </button>
         <button
+          type="button"
           onClick={onToggleEffects}
           className={`min-h-11 flex items-center gap-2 rounded-lg border px-4 py-2 text-xs uppercase tracking-widest transition-all ${
             showEffects ? "border-purple-500/50 bg-purple-500/20 text-purple-400" : "border-white/20 bg-white/10"
           }`}
+          aria-pressed={showEffects}
         >
           EFFECTS: {showEffects ? "ON" : "OFF"}
         </button>
         <button
+          type="button"
           onClick={onToggleGoalMode}
           className={`min-h-11 flex items-center gap-2 rounded-lg border px-4 py-2 text-xs uppercase tracking-widest transition-all ${
             isGoalMode ? "border-cyan-500/50 bg-cyan-500/20 text-cyan-400" : "border-white/20 bg-white/10"
           }`}
+          aria-pressed={isGoalMode}
         >
           GOAL MODE: {isGoalMode ? "ON" : "OFF"}
         </button>
@@ -122,6 +130,7 @@ export function MenuOverlay({
           <div className="flex gap-2">
             {[0.2, 0.33, 0.5, 0.75].map((ratio) => (
               <button
+                type="button"
                 key={ratio}
                 onClick={() => onGoalSizeRatioChange(ratio)}
                 className={`min-h-11 rounded border px-3 py-1 text-[10px] transition-all ${
@@ -129,6 +138,7 @@ export function MenuOverlay({
                     ? "border-cyan-500 bg-cyan-500 text-white"
                     : "border-white/20 bg-transparent text-white hover:border-white/50"
                 }`}
+                aria-pressed={goalSizeRatio === ratio}
               >
                 {Math.round(ratio * 100)}%
               </button>
@@ -142,6 +152,7 @@ export function MenuOverlay({
         <div className="flex flex-wrap justify-center gap-2">
           {[5, 11, 15, 21].map((score) => (
             <button
+              type="button"
               key={score}
               onClick={() => onWinningScoreChange(score)}
               className={`min-h-11 rounded border px-3 py-1 text-[10px] transition-all ${
@@ -149,6 +160,7 @@ export function MenuOverlay({
                   ? "border-white bg-white text-black"
                   : "border-white/20 bg-transparent text-white hover:border-white/50"
               }`}
+              aria-pressed={winningScore === score}
             >
               {score}
             </button>
@@ -174,20 +186,23 @@ export function MenuOverlay({
         <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-500">Screen & Size</p>
         <div className="flex gap-4">
           <button
+            type="button"
             onClick={onToggleFullscreen}
             className="min-h-11 flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-xs uppercase tracking-widest transition-all hover:bg-white/20"
           >
-            <Maximize size={16} />
+            <Maximize size={16} aria-hidden="true" />
             FULLSCREEN
           </button>
           <div className="flex gap-1 rounded-lg border border-white/10 bg-white/5 p-1">
             {(["small", "medium", "large"] as const).map((size) => (
               <button
+                type="button"
                 key={size}
                 onClick={() => onCanvasSizeChange(size)}
                 className={`min-h-11 rounded px-3 py-1 text-[10px] uppercase transition-all ${
                   canvasSize === size ? "bg-white text-black" : "text-white/50 hover:text-white"
                 }`}
+                aria-pressed={canvasSize === size}
               >
                 {size}
               </button>
@@ -197,11 +212,12 @@ export function MenuOverlay({
       </div>
 
       <button
+        type="button"
         ref={startButtonRef}
         onClick={onStartGame}
         className="group flex min-h-11 items-center gap-2 rounded-full bg-white px-8 py-4 font-bold text-black transition-colors hover:bg-neutral-200"
       >
-        <Play className="fill-current" />
+        <Play className="fill-current" aria-hidden="true" />
         START GAME
       </button>
       <p className="mt-8 text-sm uppercase tracking-widest text-neutral-500">USE MOUSE OR TOUCH TO MOVE</p>

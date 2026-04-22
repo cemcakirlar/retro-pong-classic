@@ -33,32 +33,37 @@ export function ControlBar({
     <>
       <div data-paddle-touch-ignore className={`${controlsPositionClass} z-10 flex gap-2`}>
         <button
+          type="button"
           onClick={onToggleMuted}
           className={`${baseControlButtonClass} bg-white/10 hover:bg-white/20`}
           title="Toggle Sound"
           aria-label="Toggle sound"
+          aria-pressed={!isMuted}
         >
-          {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          {isMuted ? <VolumeX size={20} aria-hidden="true" /> : <Volume2 size={20} aria-hidden="true" />}
         </button>
         <button
+          type="button"
           onClick={onToggleFullscreen}
           className={`${baseControlButtonClass} bg-white/10 hover:bg-white/20`}
           title="Toggle Fullscreen"
           aria-label="Toggle fullscreen"
         >
-          <Maximize size={20} />
+          <Maximize size={20} aria-hidden="true" />
         </button>
         {isPlaying && (
           <button
+            type="button"
             onClick={onToggleEffects}
             className={`${baseControlButtonClass} ${
               showEffects ? "bg-purple-500/20 text-purple-400" : "bg-white/10 hover:bg-white/20"
             }`}
             title="Toggle Effects"
             aria-label="Toggle visual effects"
+            aria-pressed={showEffects}
           >
             <motion.div animate={reduceMotion ? { rotate: 0 } : { rotate: showEffects ? 0 : 45 }}>
-              <RotateCcw size={20} />
+              <RotateCcw size={20} aria-hidden="true" />
             </motion.div>
           </button>
         )}
@@ -72,7 +77,7 @@ export function ControlBar({
           className={`${pausePositionClass} z-10 ${baseControlButtonClass} bg-white/10 hover:bg-white/20`}
           aria-label="Pause game"
         >
-          <Pause size={20} />
+          <Pause size={20} aria-hidden="true" />
         </button>
       )}
     </>

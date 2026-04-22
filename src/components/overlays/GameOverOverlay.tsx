@@ -31,7 +31,10 @@ export function GameOverOverlay({ winner, playerScore, aiScore, onRestart, reduc
 
   const content = (
     <>
-      <Trophy className={`mb-4 h-20 w-20 ${winner === "player" ? "text-yellow-400" : "text-neutral-600"}`} />
+      <Trophy
+        aria-hidden="true"
+        className={`mb-4 h-20 w-20 ${winner === "player" ? "text-yellow-400" : "text-neutral-600"}`}
+      />
       <h2 id="game-over-title" className="mb-2 text-4xl font-bold">
         {winner === "player" ? "YOU WIN!" : "AI WINS!"}
       </h2>
@@ -39,11 +42,12 @@ export function GameOverOverlay({ winner, playerScore, aiScore, onRestart, reduc
         Final Score: {playerScore} - {aiScore}
       </p>
       <button
+        type="button"
         ref={restartButtonRef}
         onClick={onRestart}
         className="flex min-h-11 items-center gap-2 rounded-full bg-white px-8 py-4 font-bold text-black transition-colors hover:bg-neutral-200"
       >
-        <RotateCcw />
+        <RotateCcw aria-hidden="true" />
         PLAY AGAIN
       </button>
     </>
